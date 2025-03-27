@@ -2,7 +2,7 @@ const params = new URLSearchParams(window.location.search);
 let voyageId = params.get("id");
 voyageId = +voyageId
 
-const reponse = await fetch(`http://localhost:3001/api/voyages/${voyageId}`);
+const reponse = await fetch(`http://localhost:3001/api/voyage_${voyageId}`);
 const voyage = await reponse.json();
 console.log(voyage);
 

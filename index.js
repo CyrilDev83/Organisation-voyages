@@ -1,6 +1,6 @@
 const reponse = await fetch(`http://localhost:3001/api/voyages`);
-const voyages = await reponse.json();
-// console.log(voyages);
+const objVoyages = await reponse.json();
+const voyages = objVoyages.voyages;
 
 function afficherVoyage() {
   for (let i = 0; i < voyages.length; i++) {

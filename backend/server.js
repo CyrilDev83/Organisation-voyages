@@ -1,103 +1,104 @@
 const express = require("express");
 const fs = require("fs");
+const path = require("path");
 const cors = require("cors");
 
 const app = express();
 const PORT = 3001;
-const DATA_FILE = "data/voyages.json";
 
-app.use(cors()); // Autorise les requêtes depuis le frontend
-app.use(express.json()); // Permet de lire le JSON dans les requêtes
+const DATA_PATH = path.join(__dirname, "data");
+const VOYAGES_FILE = path.join(DATA_PATH, "voyages.json");
 
-// app.get("/", (req, res) => {
-//     res.send("Le serveur fonctionne !");
-// });
+app.use(cors());
+app.use(express.json());
 
-// Lire tous les voyages
+// 📌 Fonction utilitaire pour lire un fichier JSON
+const lireFichier = (filePath) => {
+  return JSON.parse(fs.readFileSync(filePath, "utf8"));
+};
+
+// 📌 Fonction utilitaire pour écrire dans un fichier JSON
+const ecrireFichier = (filePath, data) => {
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf8");
+};
+
+// ✅ 1. Récupérer la liste des voyages (infos principales)
 app.get("/api/voyages", (req, res) => {
-  fs.readFile(DATA_FILE, "utf8", (err, data) => {
-    if (err)
-      return res.status(500).json({ error: "Erreur de lecture du fichier" });
-    res.json(JSON.parse(data));
-  });
+  if (!fs.existsSync(VOYAGES_FILE)) return res.json({ voyages: [] });
+  res.json(lireFichier(VOYAGES_FILE));
 });
 
-// Lire un voyage spécifique
+// ✅ 2. Récupérer les détails d’un voyage
 app.get("/api/voyages/:id", (req, res) => {
-  console.log("Requête GET reçue pour l'ID :", req.params.id);
-  fs.readFile(DATA_FILE, "utf8", (err, data) => {
-    if (err)
-      return res.status(500).json({ error: "Erreur de lecture du fichier" });
+  const voyageId = req.params.id;
+  const voyagePath = path.join(DATA_PATH, `voyage_${voyageId}.json`);
 
-    const voyages = JSON.parse(data);
-    const voyage = voyages.find((v) => v.id === req.params.id);
-    if (!voyage) return res.status(404).json({ error: "Voyage non trouvé" });
+  if (!fs.existsSync(voyagePath)) {
+    return res.status(404).json({ error: "Voyage non trouvé" });
+  }
 
-    res.json(voyage);
-  });
+  res.json(lireFichier(voyagePath));
 });
 
+// ✅ 3. Ajouter un nouveau voyage
 app.post("/api/voyages", (req, res) => {
-  fs.readFile(DATA_FILE, "utf8", (err, data) => {
-    if (err)
-      return res.status(500).json({ error: "Erreur de lecture du fichier" });
+  if (!fs.existsSync(VOYAGES_FILE))
+    ecrireFichier(VOYAGES_FILE, { voyages: [] });
 
-    let voyages = JSON.parse(data); // Récupère les voyages existants
-    const nouveauVoyage = req.body; // Récupère le voyage envoyé en POST
+  let voyages = lireFichier(VOYAGES_FILE);
+  const newVoyage = {
+    id: Date.now().toString(),
+    titre: req.body.titre,
+    lieu: req.body.lieu,
+    date: req.body.date,
+    duree: req.body.duree,
+  };
 
-    // Vérifie si l'ID existe déjà
-    if (voyages.find((v) => v.id === nouveauVoyage.id)) {
-      return res.status(400).json({ error: "ID déjà utilisé" });
-    }
+  voyages.voyages.push(newVoyage);
+  ecrireFichier(VOYAGES_FILE, voyages);
 
-    voyages.push(nouveauVoyage); // Ajoute le nouveau voyage
-    fs.writeFile(DATA_FILE, JSON.stringify(voyages, null, 2), "utf8", (err) => {
-      if (err)
-        return res.status(500).json({ error: "Erreur d'écriture du fichier" });
-
-      res.status(201).json(nouveauVoyage); // Renvoie le voyage ajouté
-    });
+  // Créer le fichier spécifique au voyage
+  const voyagePath = path.join(DATA_PATH, `voyage_${newVoyage.id}.json`);
+  ecrireFichier(voyagePath, {
+    id: newVoyage.id,
+    titre: newVoyage.titre,
+    lieu: newVoyage.lieu,
+    date: newVoyage.date,
+    duree: newVoyage.duree,
   });
+
+  res.status(201).json(newVoyage);
 });
 
-
-
+// ✅ 4. Supprimer un voyage
 app.delete("/api/voyages/:id", (req, res) => {
-  console.log("Requête DELETE reçue pour l'ID :", req.params.id);
-  const id = req.params.id;
+  const voyageId = req.params.id;
+  const voyagePath = path.join(DATA_PATH, `voyage_${voyageId}.json`);
 
-  // Lire le fichier JSON
-  fs.readFile(DATA_FILE, "utf8", (err, data) => {
-    if (err) {
-      console.error("Erreur de lecture du fichier :", err);
-      return res.status(500).json({ error: "Erreur serveur" });
-    }
+  // Supprimer le fichier voyage_X.json
+  if (fs.existsSync(voyagePath)) fs.unlinkSync(voyagePath);
 
-    let voyages = JSON.parse(data);
-    const voyageIndex = voyages.findIndex((v) => v.id === id);
+  let voyages = lireFichier(VOYAGES_FILE);
+  voyages.voyages = voyages.voyages.filter((v) => v.id !== voyageId);
+  ecrireFichier(VOYAGES_FILE, voyages);
 
-    if (voyageIndex === -1) {
-      return res.status(404).json({ error: "Voyage non trouvé" });
-    }
-
-    // Supprimer le voyage
-    voyages.splice(voyageIndex, 1);
-
-    // Réécrire le fichier JSON après suppression
-    fs.writeFile(DATA_FILE, JSON.stringify(voyages, null, 2), (err) => {
-      if (err) {
-        console.error("Erreur d'écriture dans le fichier :", err);
-        return res
-          .status(500)
-          .json({ error: "Impossible de supprimer le voyage" });
-      }
-
-      res.json({ message: "Voyage supprimé avec succès" });
-    });
-  });
+  res.json({ message: "Voyage supprimé avec succès" });
 });
 
-// Démarrer le serveur
+// ✅ 5. Récupérer les détails d’un voyage
+app.get("/api/voyage_:id", (req, res) => {
+  console.log("requete sur voyage");
+  const voyageId = req.params.id;
+  const voyagePath = path.join(DATA_PATH, `voyage_${voyageId}.json`);
+
+  if (!fs.existsSync(voyagePath)) {
+    return res.status(404).json({ error: "Voyage non trouvé" });
+  }
+
+  res.json(lireFichier(voyagePath));
+});
+
+// 🔥 Lancer le serveur
 app.listen(PORT, () =>
   console.log(`Serveur en ligne sur http://localhost:${PORT}`)
 );
