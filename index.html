@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Organiser son Voyage</title>
+    <link rel="stylesheet" href="./index.css" />
+    <!-- <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    /> -->
+    <script type="module" src="./index.js" defer ></script>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="menu" id="home">
+        <i class="fa-solid fa-house"></i>
+        <a href="./index.html">Accueil</a>
+      </div>
+      <div class="menu">
+        <i class="fa-solid fa-plane"></i>
+        <a href="https://www.skyscanner.fr/" target="_blank">Vol</a>
+      </div>
+      <div class="menu">
+        <i class="fa-solid fa-bed"></i>
+        <a href="https://www.skyscanner.fr/" target="_blank">Hebergement</a>
+      </div>
+      <div class="menu">
+        <i class="fa-solid fa-utensils"></i>
+        <a href="https://www.skyscanner.fr/" target="_blank">restaurant</a>
+      </div>
+      <div class="menu">
+        <i class="fa-solid fa-car"></i>
+        <a href="https://www.skyscanner.fr/" target="_blank">Voiture</a>
+      </div>
+      <div class="menu">
+        <i class="fa-solid fa-star"></i>
+        <a href="https://www.skyscanner.fr/" target="_blank">A voir</a>
+      </div>
+      <div class="menu">
+        <i class="fa-solid fa-person-walking"></i>
+        <a href="https://www.skyscanner.fr/" target="_blank">Activité</a>
+      </div>
+    </nav>
+    <main class="main">
+      <div class="nouveau">
+        <button class="myButton" id="btn-nouveau-voyage">Créer un nouveau voyage</button>
+      </div>
+      <!-- Modale cachée par défaut -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Ajouter un voyage</h2>
+    <form id="form-voyage">
+      <label for="titre">Titre :</label>
+      <input type="text" id="titre" required>
+      
+      <label for="lieu">Lieu :</label>
+      <input type="text" id="lieu" required>
+      
+      <label for="date">Date :</label>
+      <input type="date" id="date" required>
+      
+      <label for="duree">Durée :</label>
+      <input type="text" id="duree" required>
+      
+      <button type="submit">Ajouter</button>
+    </form>
+  </div>
+</div>
+      <div class="titre-voyages">
+        <h1>Liste de mes voyages</h1>
+      </div>
+      <div class="liste">  
+<!-- contenu ajouter par le JS -->     
+ 
+      </div>
+      <button class="test" >test</button>
+    </main>
+
+  </body>
+</html>

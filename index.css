@@ -1,0 +1,151 @@
+* {
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+}
+
+html,
+body {
+  height: 100%; /* S'assurer que le body et le HTML prennent toute la hauteur */
+}
+
+body {
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* 3 lignes : nav, contenu principal, footer */
+  height: 100%;
+}
+
+nav {
+  height: 5em;
+  width: 100%;
+  background-color: #a1cad9;
+  display: flex;
+  align-items: center;
+  gap: 2em;
+}
+h1 {
+  text-align: center;
+}
+
+.menu {
+  border: solid black 1px;
+  border-radius: 1em;
+  height: 2em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+}
+.menu a {
+  text-decoration: none; /* Supprime le soulignement */
+  color: black;
+}
+.nouveau {
+  width: 100vw;
+  height: 10vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: aliceblue;
+}
+.myButton {
+  background: linear-gradient(to bottom, #7892c2 5%, #476e9e 100%);
+  background-color: #7892c2;
+  border-radius: 28px;
+  border: 1px solid #4e6096;
+  display: inline-block;
+  cursor: pointer;
+  color: #ffffff;
+  font-family: Arial;
+  font-size: 17px;
+  padding: 16px 31px;
+  text-decoration: none;
+  text-shadow: 0px 1px 0px #283966;
+}
+.myButton:hover {
+  background: linear-gradient(to bottom, #476e9e 5%, #7892c2 100%);
+  background-color: #476e9e;
+}
+.myButton:active {
+  position: relative;
+  top: 1px;
+}
+.titre-voyages {
+  width: 100vw;
+  height: 10vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(247, 251, 255);
+}
+ .liste {
+   display: flex;
+   padding: 30px;
+   gap: 30px;
+   flex-wrap: wrap;
+   justify-content: space-around;
+  }
+  .carte {
+    height: auto;
+    width: 250px;
+    display: flex;
+   
+  
+  }
+ .card-voyage {
+    height: 200px;
+    width: 200px;
+    background-color: rgb(120, 181, 120);
+    border-radius: 20px;
+    text-align: center;
+    color: black;
+
+ }
+ .card-voyage:hover {
+    scale: 1.1;
+    transition: 200ms;
+ }
+
+
+/* Gestion de la Modale  */
+ .modal {
+  display: none; /* Cachée par défaut */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 20px;
+  width: 50%;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.close {
+  float: right;
+  font-size: 28px;
+  cursor: pointer;
+}
+.btn-supprimer {
+  height: 30px;
+  width: 30px;
+  margin-left: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+ .btn-supprimer:hover {
+  scale: 1.1;
+  transition: 200ms;
+ }
