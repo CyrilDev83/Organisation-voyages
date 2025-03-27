@@ -9,5 +9,39 @@ console.log(voyage);
 
 
 const titre = document.querySelector(".titre");
-console.log(titre);
 titre.innerHTML= `${voyage.titre}`;
+
+const nbJours = voyage.duree
+console.log(nbJours)
+
+
+function creationJours(nb) {
+    for (let i=1; i<=nb; i++) {
+const jours = document.querySelector(".jours")
+const jour = document.createElement("section")
+jour.classList.add("jour")
+const numJour = document.createElement("h3")
+numJour.classList.add("num-jour")
+numJour.innerText = `Day ${i}`
+const fiches = document.createElement("div")
+fiches.classList.add("fiches")
+
+
+const add = document.createElement("button")
+add.classList.add("addFiche")
+add.innerText = "add"
+
+jour.appendChild(numJour)
+jour.appendChild(fiches)
+jour.appendChild(add)
+jours.appendChild(jour)
+
+
+
+
+
+console.log(jour)
+}}
+
+
+creationJours(nbJours)

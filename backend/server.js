@@ -87,7 +87,7 @@ app.delete("/api/voyages/:id", (req, res) => {
 
 // ✅ 5. Récupérer les détails d’un voyage
 app.get("/api/voyage_:id", (req, res) => {
-  console.log("requete sur voyage");
+
   const voyageId = req.params.id;
   const voyagePath = path.join(DATA_PATH, `voyage_${voyageId}.json`);
 
