@@ -82,7 +82,7 @@ h1 {
 .fiches {
   display: flex;
   flex-direction: column;
- 
+ width: 400px;
   gap: 10px;
 }
 

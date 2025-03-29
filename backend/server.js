@@ -57,6 +57,15 @@ app.post("/api/voyages", (req, res) => {
   voyages.voyages.push(newVoyage);
   ecrireFichier(VOYAGES_FILE, voyages);
 
+  // Générer les jours en fonction de la durée
+  const jours = Array.from(
+    { length: parseInt(newVoyage.duree, 10) },
+    (_, i) => ({
+      jour: i + 1,
+      activites: [],
+    })
+  );
+
   // Créer le fichier spécifique au voyage
   const voyagePath = path.join(DATA_PATH, `voyage_${newVoyage.id}.json`);
   ecrireFichier(voyagePath, {
@@ -65,6 +74,7 @@ app.post("/api/voyages", (req, res) => {
     lieu: newVoyage.lieu,
     date: newVoyage.date,
     duree: newVoyage.duree,
+    jours: jours,
   });
 
   res.status(201).json(newVoyage);
@@ -87,7 +97,6 @@ app.delete("/api/voyages/:id", (req, res) => {
 
 // ✅ 5. Récupérer les détails d’un voyage
 app.get("/api/voyage_:id", (req, res) => {
-
   const voyageId = req.params.id;
   const voyagePath = path.join(DATA_PATH, `voyage_${voyageId}.json`);
 
@@ -97,6 +106,25 @@ app.get("/api/voyage_:id", (req, res) => {
 
   res.json(lireFichier(voyagePath));
 });
+
+// 6. Ecrire sur le fichier JSON du voyage
+// app.post("/api/voyage_id", (req, res) => {
+
+//   const voyageId = req.params.id;
+//   const voyagePath = path.join(DATA_PATH, `voyage_${voyageId}.json`);
+
+//   if (!fs.existsSync(voyagePath)) {
+//     return res.status(404).json({ error: "Voyage non trouvé" });
+//   }
+
+//   const jours = {
+//     id: Date.now().toString(),
+//     titre: req.body.titre,
+//     lieu: req.body.lieu,
+//     date: req.body.date,
+//     duree: req.body.duree,
+//   };
+// })
 
 // 🔥 Lancer le serveur
 app.listen(PORT, () =>
