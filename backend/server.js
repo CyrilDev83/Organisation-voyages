@@ -61,7 +61,7 @@ app.post("/api/voyages", (req, res) => {
   const jours = Array.from(
     { length: parseInt(newVoyage.duree, 10) },
     (_, i) => ({
-      jour: i + 1,
+      jour: `${i + 1}`,
       activites: [],
     })
   );
@@ -108,23 +108,39 @@ app.get("/api/voyage_:id", (req, res) => {
 });
 
 // 6. Ecrire sur le fichier JSON du voyage
-// app.post("/api/voyage_id", (req, res) => {
+app.post("/api/voyage_:id/jours/jour:jourId/activites", (req, res) => {
+  console.log("requete post pour activite");
+  const voyageId = req.params.id;
 
-//   const voyageId = req.params.id;
-//   const voyagePath = path.join(DATA_PATH, `voyage_${voyageId}.json`);
+  let jour = req.params.jourId -1;
 
-//   if (!fs.existsSync(voyagePath)) {
-//     return res.status(404).json({ error: "Voyage non trouvé" });
-//   }
+  const voyagePath = path.join(DATA_PATH, `voyage_${voyageId}.json`);
 
-//   const jours = {
-//     id: Date.now().toString(),
-//     titre: req.body.titre,
-//     lieu: req.body.lieu,
-//     date: req.body.date,
-//     duree: req.body.duree,
-//   };
-// })
+  if (!fs.existsSync(voyagePath)) {
+    return res.status(404).json({ error: "Voyage non trouvé" });
+  }
+
+  // res.json(lireFichier(voyagePath));
+
+  let ceVoyage = JSON.parse(fs.readFileSync(voyagePath, "utf8"));
+
+  if (jour === -1) return res.status(404).json({ error: "Jour non trouvé" });
+
+  // Ajouter l'activité
+
+  const nouvelleActivite = req.body;
+  jour = +jour;
+
+  ceVoyage.jours[jour].activites.push(nouvelleActivite);
+
+  // Sauvegarde du fichier
+  fs.writeFile(voyagePath, JSON.stringify(ceVoyage, null, 2), "utf8", (err) => {
+    if (err)
+      return res.status(500).json({ error: "Erreur d'écriture du fichier" });
+    console.log("Activité ajoutée côté serveur :", nouvelleActivite);
+    res.status(201).json(nouvelleActivite);
+  });
+});
 
 // 🔥 Lancer le serveur
 app.listen(PORT, () =>

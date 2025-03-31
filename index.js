@@ -6,12 +6,14 @@ function afficherVoyage() {
   for (let i = 0; i < voyages.length; i++) {
     const liste = document.querySelector(".liste");
     const carte = document.createElement("article");
+    const voyageId = `${voyages[i].id}`;
+    console.log(voyageId)
     carte.id = `${voyages[i].id}`;
     carte.classList.add("carte");
     // console.log(carte);
 
     const aref = document.createElement("a");
-    aref.setAttribute("href", `./voyage.html?id= ${voyages[i].id}`);
+    aref.setAttribute("href", `./voyage.html?id= ${voyageId}`);
     aref.setAttribute("target", "_blank");
     liste.appendChild(carte);
     // console.log(aref)
