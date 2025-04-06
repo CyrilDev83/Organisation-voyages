@@ -13,6 +13,7 @@ body {
   display: grid;
   grid-template-rows: auto 1fr auto; /* 3 lignes : nav, contenu principal, footer */
   height: 100%;
+  font-family: "poppins", sans-serif;
 }
 
 nav {
@@ -121,14 +122,39 @@ h1 {
 }
 
 .modal-content {
-  background-color: white;
+  background-color: rgb(220, 234, 254);
   margin: 10% auto;
   padding: 20px;
-  width: 50%;
-  border-radius: 8px;
+  width: 30%;
+  height: auto;
+  border-radius: 12px;
   text-align: center;
+ 
 }
-
+#form-voyage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+#form-voyage input {
+width: 50%;
+height: 30px;
+border-radius: 10px;
+}
+#form-voyage label {
+  align-self: self-start;
+  margin-left: 25%;
+}
+#form-voyage button {
+  background: linear-gradient(to bottom, #7892c2 5%, #476e9e 100%);
+  background-color: #7892c2;
+  border-radius: 28px;
+  width: 50%;
+  height: 35px;
+  margin: 20px;
+}
 .close {
   float: right;
   font-size: 28px;
