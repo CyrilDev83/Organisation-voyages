@@ -1,20 +1,12 @@
 
-
-const dataFiche = {
-  date: "01 avril 2025",
-  titre: "trajet",
-  duree: "5 jours",
-};
 const params = new URLSearchParams(window.location.search);
 let voyageId = params.get("id");
 voyageId = +voyageId;
 
-
 const reponse = await fetch(`http://localhost:3001/api/voyage_${voyageId}`);
 let voyage = await reponse.json();
 
-// const activites = voyage.jours[1].activites[5].titre
-// console.log(activites)
+
 
 const titre = document.querySelector(".titre");
 titre.innerText = `${voyage.titre}`;
@@ -45,20 +37,11 @@ function creationJours(nb) {
     jour.appendChild(fiches);
     jour.appendChild(add);
     jours.appendChild(jour);
-    // fiches.appendChild(fiche);
+ 
   }
 }
 
-const addFiche = document.querySelectorAll(".addFiche");
-addFiche.forEach((element) => {
-  element.addEventListener("click", (event) => {
- 
-    const parent = event.target.parentNode;
-    const jourId = +parent.id;
 
-    ajouterActivite(jourId, dataFiche); // Ajoute l'activité sans recharger la page
-  });
-});
 
 function ajouterActivite(jourId, dataFiche) {
   fetch(
@@ -105,3 +88,44 @@ async function affichageActivites() {
   }
 }
 
+// Gestion de la modal
+let jourId = 0
+const modal = document.getElementById("modal");
+
+const closeModal = document.querySelector(".close");
+const formActivite = document.getElementById("form-activite");
+
+// Ouvrir la modale
+const addFiche = document.querySelectorAll(".addFiche");
+addFiche.forEach((element) => {
+  element.addEventListener("click", (event) => {
+    const parent = event.target.parentNode;
+    jourId = +parent.id;
+
+    modal.style.display = "block";
+    return jourId
+  });
+});
+
+// Fermer la modale
+closeModal.addEventListener("click", () => {
+  modal.style.display = "none";
+});
+// Fermer si on clique en dehors
+window.addEventListener("click", (event) => {
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+});
+
+formActivite.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const dataFiche = {
+    titre: document.getElementById("titre").value,
+    lieu: document.getElementById("lieu").value,
+    type: document.getElementById("type").value,
+    duree: document.getElementById("duree").value
+  }
+
+  ajouterActivite(jourId, dataFiche);
+})

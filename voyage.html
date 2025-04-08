@@ -6,10 +6,10 @@
     <title>system jour-fiches</title>
     <link rel="stylesheet" href="voyage.css" />
     <link rel="stylesheet" href="./index.css" />
-    <link
+    <!-- <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-    />
+    /> -->
     <script type="module" src="./voyage.js" defer></script>
   </head>
   <body>
@@ -78,6 +78,33 @@
           <div class="outils">Outils</div>
         </article>
       </section>
+      <div id="modal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Ajouter une Activité</h2>
+          <form id="form-activite">
+
+            <label for="titre">Titre :</label>
+            <input type="text" id="titre" required />
+
+            <label for="lieu">Lieu :</label>
+            <input type="text" id="lieu" required />
+
+            <label for="type">Type :</label>
+            <select type="type" id="type" required>
+              <option value="transport">Transport</option>
+              <option value="visite">Visite</option>
+              <option value="restauration">Restauration</option>
+              <option value="loisir">Loisir</option>
+            </select>
+
+            <label for="duree">Durée en heures:</label>
+            <input type="number" id="duree" required />
+
+            <button type="submit">Ajouter</button>
+          </form>
+        </div>
+      </div>
     </main>
   </body>
 </html>
