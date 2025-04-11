@@ -99,6 +99,7 @@ h1 {
   width: 350px;
   background-color: rgb(198, 215, 230);
   border-radius: 7px;
+  cursor: pointer;
 }
 
 .fiche-ouverte {
@@ -207,4 +208,5 @@ font-size: large
   width: 50%;
   height: 35px;
   margin: 20px;
+  cursor: pointer;
 }

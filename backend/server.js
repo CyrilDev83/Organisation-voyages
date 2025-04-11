@@ -120,7 +120,7 @@ app.post("/api/voyage_:id/jours/jour:jourId/activites", (req, res) => {
     return res.status(404).json({ error: "Voyage non trouvé" });
   }
 
-  // res.json(lireFichier(voyagePath));
+
 
   let ceVoyage = JSON.parse(fs.readFileSync(voyagePath, "utf8"));
 
@@ -141,6 +141,35 @@ app.post("/api/voyage_:id/jours/jour:jourId/activites", (req, res) => {
     res.status(201).json(nouvelleActivite);
   });
 });
+
+// Récuperer les détail d'un activité
+
+// app.get("/api/voyage_:id/jours/jour:jourId/activites:activiteId", (req, res) => {
+// const voyageId = req.params.id
+// const jour = req.params.jourId
+// const activite = req.params.activiteId
+
+// const activitePath = path.join(DATA_PATH, `voyage_${voyageId}.json`);
+// res.json(lireFichier(activitePath));
+// })
+
+// Route GET pour récupérer une activité par ID
+app.get('/activite/:id', (req, res) => {
+  const activiteId = req.params.id;
+
+  // Recherche de l'activité dans tous les jours
+  for (const jour of voyage.jours) {
+      const activite = jour.activites.find(act => act.id === activiteId);
+      if (activite) {
+          return res.json(activite);
+      }
+  }
+
+  // Si l'activité n'est pas trouvée
+  res.status(404).json({ message: "Activité non trouvée" });
+});
+
+
 
 // 🔥 Lancer le serveur
 app.listen(PORT, () =>

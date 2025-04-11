@@ -1,12 +1,9 @@
-
 const params = new URLSearchParams(window.location.search);
 let voyageId = params.get("id");
 voyageId = +voyageId;
 
 const reponse = await fetch(`http://localhost:3001/api/voyage_${voyageId}`);
 let voyage = await reponse.json();
-
-
 
 const titre = document.querySelector(".titre");
 titre.innerText = `${voyage.titre}`;
@@ -37,11 +34,8 @@ function creationJours(nb) {
     jour.appendChild(fiches);
     jour.appendChild(add);
     jours.appendChild(jour);
- 
   }
 }
-
-
 
 function ajouterActivite(jourId, dataFiche) {
   fetch(
@@ -82,14 +76,14 @@ async function affichageActivites() {
       const fiche = document.createElement("article");
       fiche.classList.add("fiche");
       fiche.innerText = voyage.jours[e].activites[i].titre;
-
+      fiche.id = voyage.jours[e].activites[i].id;
       fichesContainer.appendChild(fiche);
     }
   }
 }
 
 // Gestion de la modal
-let jourId = 0
+let jourId = 0;
 const modal = document.getElementById("modal");
 
 const closeModal = document.querySelector(".close");
@@ -103,7 +97,7 @@ addFiche.forEach((element) => {
     jourId = +parent.id;
 
     modal.style.display = "block";
-    return jourId
+    return jourId;
   });
 });
 
@@ -121,11 +115,33 @@ window.addEventListener("click", (event) => {
 formActivite.addEventListener("submit", (e) => {
   e.preventDefault();
   const dataFiche = {
+    id: Date.now().toString(),
     titre: document.getElementById("titre").value,
     lieu: document.getElementById("lieu").value,
     type: document.getElementById("type").value,
-    duree: document.getElementById("duree").value
-  }
+    duree: document.getElementById("duree").value,
+  };
 
   ajouterActivite(jourId, dataFiche);
-})
+});
+
+const ficheActivite = document.querySelectorAll(".fiche");
+console.log(ficheActivite);
+ficheActivite.forEach((element) => {
+  element.addEventListener("click", (e) => {
+    const activiteId = e.target.id;
+    for (const jour of voyage.jours) {
+      const activite = jour.activites.find((act) => act.id === activiteId);
+      if (activite) {
+        creerFiche(activite);
+      }
+    }
+  });
+});
+
+function creerFiche(activite) {
+  const titreFiche = document.querySelector(".titre-fiche");
+  const fichePrincipale = document.querySelector(".fiche-principale");
+  titreFiche.innerText = activite.titre;
+  fichePrincipale.innerText = activite.lieu;
+}
