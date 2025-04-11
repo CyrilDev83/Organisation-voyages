@@ -120,13 +120,14 @@ formActivite.addEventListener("submit", (e) => {
     lieu: document.getElementById("lieu").value,
     type: document.getElementById("type").value,
     duree: document.getElementById("duree").value,
+    commentaire: document.getElementById("commentaire").value,
+    
   };
 
   ajouterActivite(jourId, dataFiche);
 });
 
 const ficheActivite = document.querySelectorAll(".fiche");
-console.log(ficheActivite);
 ficheActivite.forEach((element) => {
   element.addEventListener("click", (e) => {
     const activiteId = e.target.id;
@@ -141,7 +142,30 @@ ficheActivite.forEach((element) => {
 
 function creerFiche(activite) {
   const titreFiche = document.querySelector(".titre-fiche");
-  const fichePrincipale = document.querySelector(".fiche-principale");
+  const lieu = document.querySelector(".lieu");
+  const commentaire = document.querySelector(".commentaire")
+  
   titreFiche.innerText = activite.titre;
-  fichePrincipale.innerText = activite.lieu;
+  lieu.innerText = `lieu : ${activite.lieu}`;
+  commentaire.innerText = activite.commentaire
+ 
+  recupPhoto(activite.lieu)
+}
+
+function recupPhoto(place) {
+  const image = document.getElementById("image-lieu")
+  const accessKey = "Sl-xrjWtpOWmoPVqlnovMkM6-Hupaxr41AU2Q12gTNA"
+  const url = `https://api.unsplash.com/search/photos?query=${place}&client_id=${accessKey}`;
+  
+  fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.results.length > 0) {
+                image.src = data.results[0].urls.regular;
+            } else {
+                photoLieu.src = "./ressource/luke-stackpoole-eWqOgJ-lfiI-unsplash.jpg"; // Image par défaut si aucun résultat
+            }
+        })
+        .catch(error => console.error("Erreur de chargement d'image:", error));
+   
 }

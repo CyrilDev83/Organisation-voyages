@@ -54,17 +54,7 @@
         </div>
 
         <section class="jours">
-          <!-- <section class="jour">
-            <h3 class="num-jour">DAY 1</h3>
-
-            <div class="fiches">
-              <article class="fiche">fiche 12</article>
-              <article class="fiche">fiche 13</article>
-              <article class="fiche">fiche 13</article>
-            </div>
-
-            <button class="addFiche">add</button>
-          </section> -->
+     
           <!-- Code ajouter par voyage.js -->
         </section>
       </section>
@@ -74,7 +64,18 @@
           <div class="titre-fiche">courante</div>
           <div class="titre-fiche-apres">suivante</div>
           <div class="docs">Map</div>
-          <div class="fiche-principale">principale</div>
+          <div class="fiche-principale">
+            <div class="detail">
+              <div class="lieu">lieu</div>
+              <div class="type">type</div>
+              <div class="duree">duree</div>
+              <div class="commentaire">commentaire</div>
+            </div>
+            <div class="photo">
+              <img id="image-lieu" src="" alt="image du lieu">
+            </div>
+          </div>
+
           <div class="outils">Outils</div>
         </article>
       </section>
@@ -100,6 +101,9 @@
 
             <label for="duree">Durée en heures:</label>
             <input type="number" id="duree" required />
+            
+            <label for="commentaire">commentaire:</label>
+            <textarea name="commentaire" id="commentaire" rows="4"></textarea>
 
             <button type="submit">Ajouter</button>
           </form>

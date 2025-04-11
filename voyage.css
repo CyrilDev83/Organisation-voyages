@@ -52,7 +52,7 @@ h1 {
 }
 
 .nuit h3 {
-    padding-top: 10px;
+  padding-top: 10px;
 }
 
 .jour {
@@ -73,7 +73,7 @@ h1 {
 }
 .num-jour {
   width: 50px;
- 
+
   background-color: rgb(187, 255, 187);
   border-radius: 10px;
   text-align: center;
@@ -82,7 +82,7 @@ h1 {
 .fiches {
   display: flex;
   flex-direction: column;
- width: 400px;
+  width: 400px;
   gap: 10px;
 }
 
@@ -144,7 +144,27 @@ h1 {
 .fiche-principale {
   grid-area: fiche-principale;
   align-items: center;
+  display: flex;
   background-color: rgb(158, 179, 198);
+  border-radius: 10px;
+  padding: 10px;
+}
+.detail {
+  width: 50%;
+  height: 100%;
+}
+.photo {
+  width: 50%;
+  height: 100%;
+  border-radius: 5px;
+  
+
+  /* background-color: azure; */
+}
+#image-lieu {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
   border-radius: 10px;
 }
 .docs {
@@ -179,7 +199,6 @@ h1 {
   height: auto;
   border-radius: 12px;
   text-align: center;
- 
 }
 #form-activite {
   display: flex;
@@ -187,15 +206,34 @@ h1 {
   justify-content: center;
   align-items: center;
   gap: 5px;
-
 }
 #form-activite input {
-width: 50%;
-height: 20px;
-border-radius: 10px;
-padding: 1em;
-font-weight: bold;
-font-size: large
+  width: 50%;
+  
+  border-radius: 10px;
+  padding: 1em;
+  font-weight: bold;
+  font-size: large;
+  border: 0px;
+}
+#form-activite select {
+  width: 50%;
+
+  border-radius: 10px;
+  padding: 1em;
+  font-weight: bold;
+  font-size: large;
+  border: 0px;
+}
+
+ #commentaire {
+  width: 50%;
+ height: auto;
+  border-radius: 10px;
+  padding: 1em;
+  font-weight: bold;
+  font-size: large;
+  border: 0px;
 }
 #form-activite label {
   align-self: self-start;
