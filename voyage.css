@@ -101,6 +101,18 @@ h1 {
   border-radius: 7px;
   cursor: pointer;
 }
+.modalActivite {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
 
 .fiche-ouverte {
   width: 70vw;
@@ -109,7 +121,7 @@ h1 {
   grid-template-columns: 1fr 2fr 1fr;
   grid-template-rows: 0.5fr 2fr 0.8fr;
   grid-template-areas:
-    "titre-fiche-avant titre-fiche titre-fiche-apres"
+    "parametre titre-fiche delete"
     "docs fiche-principale fiche-principale"
     "outils outils outils";
 
@@ -119,20 +131,40 @@ h1 {
   padding: 10px;
 }
 
-.titre-fiche-avant {
-  grid-area: titre-fiche-avant;
-  font-size: small;
+.parametres {
+  grid-area: parametre;
+  display: flex;
   text-align: center;
-  background-color: blueviolet;
+  background-color: rgb(119, 109, 255);
   border-radius: 10px 0px 0px 10px;
+  padding: 5px;
+  gap: 5px;
+  justify-content: space-around;
+  align-items: center;
 }
-.titre-fiche-apres {
-  grid-area: titre-fiche-apres;
-  font-size: small;
+.parametre {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.modifierActivite {
+  background-color: grey;
+}
+.fermerActivite {
+  background-color: blue;
+}
+.deleteActivite {
+  background-color: red;
+}
+
+/* .delete {
+  grid-area: delete;
+  cursor: pointer;
   text-align: center;
-  background-color: blueviolet;
+  background-color: rgb(240, 71, 71);
   border-radius: 0 10px 10px 0;
-}
+} */
 
 .titre-fiche {
   grid-area: titre-fiche;
@@ -157,9 +189,8 @@ h1 {
   width: 50%;
   height: 100%;
   border-radius: 5px;
-  
 
-  /* background-color: azure; */
+  background-color: azure;
 }
 #image-lieu {
   width: 100%;
@@ -191,7 +222,7 @@ h1 {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-.modal-content {
+/* .modal-content {
   background-color: rgba(220, 234, 254);
   margin: 10% auto;
   padding: 20px;
@@ -199,7 +230,7 @@ h1 {
   height: auto;
   border-radius: 12px;
   text-align: center;
-}
+} */
 #form-activite {
   display: flex;
   flex-direction: column;
@@ -209,7 +240,7 @@ h1 {
 }
 #form-activite input {
   width: 50%;
-  
+
   border-radius: 10px;
   padding: 1em;
   font-weight: bold;
@@ -226,9 +257,9 @@ h1 {
   border: 0px;
 }
 
- #commentaire {
+#commentaire {
   width: 50%;
- height: auto;
+  height: auto;
   border-radius: 10px;
   padding: 1em;
   font-weight: bold;
@@ -247,4 +278,19 @@ h1 {
   height: 35px;
   margin: 20px;
   cursor: pointer;
+}
+
+.outils {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  justify-content: space-around;
+}
+
+.outils div {
+  width: 100px;
+  height: 100%;
+  background-color: rgb(169, 169, 169);
+  border-radius: 5px;
+  text-align: center;
 }

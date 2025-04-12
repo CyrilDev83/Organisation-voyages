@@ -112,15 +112,13 @@ app.post("/api/voyage_:id/jours/jour:jourId/activites", (req, res) => {
   console.log("requete post pour activite");
   const voyageId = req.params.id;
 
-  let jour = req.params.jourId -1;
+  let jour = req.params.jourId - 1;
 
   const voyagePath = path.join(DATA_PATH, `voyage_${voyageId}.json`);
 
   if (!fs.existsSync(voyagePath)) {
     return res.status(404).json({ error: "Voyage non trouvé" });
   }
-
-
 
   let ceVoyage = JSON.parse(fs.readFileSync(voyagePath, "utf8"));
 
@@ -142,35 +140,57 @@ app.post("/api/voyage_:id/jours/jour:jourId/activites", (req, res) => {
   });
 });
 
-// Récuperer les détail d'un activité
-
-// app.get("/api/voyage_:id/jours/jour:jourId/activites:activiteId", (req, res) => {
-// const voyageId = req.params.id
-// const jour = req.params.jourId
-// const activite = req.params.activiteId
-
-// const activitePath = path.join(DATA_PATH, `voyage_${voyageId}.json`);
-// res.json(lireFichier(activitePath));
-// })
-
 // Route GET pour récupérer une activité par ID
-app.get('/activite/:id', (req, res) => {
+app.get("/activite/:id", (req, res) => {
   const activiteId = req.params.id;
 
   // Recherche de l'activité dans tous les jours
   for (const jour of voyage.jours) {
-      const activite = jour.activites.find(act => act.id === activiteId);
-      if (activite) {
-          return res.json(activite);
-      }
+    const activite = jour.activites.find((act) => act.id === activiteId);
+    if (activite) {
+      return res.json(activite);
+    }
   }
 
   // Si l'activité n'est pas trouvée
   res.status(404).json({ message: "Activité non trouvée" });
 });
 
+// Supprimer une activité
+app.delete("/api/voyage_:id/:activiteId", (req, res) => {
+  console.log("Requête DELETE activité");
 
+  const voyageId = req.params.id;
+  const activiteId = req.params.activiteId;
 
+  const voyagePath = path.join(DATA_PATH, `voyage_${voyageId}.json`);
+
+  if (!fs.existsSync(voyagePath)) {
+    return res.status(404).json({ error: "Voyage non trouvé" });
+  }
+
+  let ceVoyage = JSON.parse(fs.readFileSync(voyagePath, "utf8"));
+  let activiteTrouvee = null;
+
+  // Boucle sur chaque jour pour chercher et supprimer l'activité
+  for (const jour of ceVoyage.jours) {
+    const index = jour.activites.findIndex((act) => act.id === activiteId);
+    if (index !== -1) {
+      activiteTrouvee = jour.activites[index];
+      jour.activites.splice(index, 1); // Suppression de l'activité
+      break;
+    }
+  }
+
+  if (!activiteTrouvee) {
+    return res.status(404).json({ message: "Activité non trouvée" });
+  }
+
+  // Sauvegarde du voyage modifié
+  fs.writeFileSync(voyagePath, JSON.stringify(ceVoyage, null, 2), "utf8");
+
+  res.json({ message: "Activité supprimée avec succès", activite: activiteTrouvee });
+});
 // 🔥 Lancer le serveur
 app.listen(PORT, () =>
   console.log(`Serveur en ligne sur http://localhost:${PORT}`)
