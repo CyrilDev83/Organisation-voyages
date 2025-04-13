@@ -1,16 +1,50 @@
+class Activite {
+  constructor({ id, titre, lieu, type, prix, heure, duree, commentaire }) {
+    this.id = id;
+    this.titre = titre;
+    this.lieu = lieu;
+    this.type = type;
+    this.prix = prix;
+    this.heure = heure;
+    this.duree = duree;
+    this.commentaire = commentaire;
+  }
+}
+
+class Jour {
+  constructor(date, activites = []) {
+    this.date = date;
+    this.activites = activites.map((act) => new Activite(act));
+  }
+
+  ajouterActivite(activite) {
+    this.activites.push(activite);
+  }
+
+  supprimerActivite(id) {
+    this.activites = this.activites.filter((act) => act.id !== id);
+  }
+
+  // Trier les activités par heure croissante (utile pour l'affichage)
+  trierActivitesParHeure() {
+    console.log(this.activites)
+    this.activites.sort((a, b) => a.heure.localeCompare(b.heure));
+  }
+}
+
 const params = new URLSearchParams(window.location.search);
-let voyageId = params.get("id");
-voyageId = +voyageId;
+let voyageId = +params.get("id");
 
 const reponse = await fetch(`http://localhost:3001/api/voyage_${voyageId}`);
 let voyage = await reponse.json();
 
+// Recréer les jours avec la classe Jour
+voyage.jours = voyage.jours.map((jour) => new Jour(jour.date, jour.activites));
+
 const titre = document.querySelector(".titre");
 titre.innerText = `${voyage.titre}`;
 
-const nbJours = voyage.duree;
-
-creationJours(nbJours);
+creationJours(voyage.jours.length);
 affichageActivites();
 
 function creationJours(nb) {
@@ -28,84 +62,77 @@ function creationJours(nb) {
     add.classList.add("addFiche");
     add.setAttribute("type", "button");
     add.innerText = "add";
-    const fiche = document.createElement("article");
-    fiche.classList.add("fiche");
     jour.appendChild(numJour);
     jour.appendChild(fiches);
     jour.appendChild(add);
     jours.appendChild(jour);
+
+    // Réattacher les listeners à la volée
+    add.addEventListener("click", (event) => {
+      const parent = event.target.parentNode;
+      jourId = +parent.id;
+      modal.style.display = "block";
+      return jourId;
+    });
   }
 }
 
-function ajouterActivite(jourId, dataFiche) {
+function ajouterActivite(jourId, activite) {
   fetch(
     `http://localhost:3001/api/voyage_${voyageId}/jours/jour${jourId}/activites`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(dataFiche),
+      body: JSON.stringify(activite),
     }
   )
     .then((response) => response.json())
     .then((data) => {
       console.log("✅ Activité ajoutée :", data);
-
-      // Ajouter l'activité seulement au jour sélectionné
+      const activite = new Activite(data);
+      voyage.jours[jourId - 1].ajouterActivite(activite);
+      affichageActivites();
     })
     .catch((error) => console.error("Erreur :", error));
 }
 
-async function affichageActivites() {
-  // S'assurer que le conteneur principal existe
+function affichageActivites() {
   const joursContainer = document.querySelector(".jours");
 
-  // Parcours des jours du voyage
   for (let e = 0; e < voyage.jours.length; e++) {
-    // Récupérer le bon conteneur de jour
-    const jourdiv = document.getElementById(e + 1); // IDs des jours commencent à 1
+    const jour = voyage.jours[e];
+    jour.trierActivitesParHeure(); // ← 🔥 ici on trie avant d'afficher
 
-    if (!jourdiv) continue; // Sécurité si le jour n'existe pas
+  for (let e = 0; e < voyage.jours.length; e++) {
+    const jourdiv = document.getElementById(e + 1);
+    if (!jourdiv) continue;
 
-    const fichesContainer = jourdiv.querySelector(".fiches"); // Récupérer le conteneur d'activités
-
-    // Vider le conteneur avant de l'afficher (évite les doublons)
+    const fichesContainer = jourdiv.querySelector(".fiches");
     fichesContainer.innerHTML = "";
 
-    // Ajouter les activités du jour
     for (let i = 0; i < voyage.jours[e].activites.length; i++) {
       const fiche = document.createElement("article");
       fiche.classList.add("fiche");
       fiche.innerText = voyage.jours[e].activites[i].titre;
       fiche.id = voyage.jours[e].activites[i].id;
+      fiche.addEventListener("click", () =>
+        creerFiche(voyage.jours[e].activites[i])
+      );
       fichesContainer.appendChild(fiche);
     }
   }
 }
+}
 
-// Gestion de la modal
 let jourId = 0;
 const modal = document.getElementById("modal");
-
 const closeModal = document.querySelector(".close");
 const formActivite = document.getElementById("form-activite");
 
-// Ouvrir la modale
-const addFiche = document.querySelectorAll(".addFiche");
-addFiche.forEach((element) => {
-  element.addEventListener("click", (event) => {
-    const parent = event.target.parentNode;
-    jourId = +parent.id;
-
-    modal.style.display = "block";
-    return jourId;
-  });
-});
-
-// Fermer la modale
 closeModal.addEventListener("click", () => {
   modal.style.display = "none";
 });
-// Fermer si on clique en dehors
+
 window.addEventListener("click", (event) => {
   if (event.target === modal) {
     modal.style.display = "none";
@@ -117,26 +144,15 @@ formActivite.addEventListener("submit", (e) => {
   const dataFiche = {
     id: Date.now().toString(),
     titre: document.getElementById("titre").value,
-    lieu: document.getElementById("lieu").value,
     type: document.getElementById("type").value,
+    lieu: document.getElementById("lieu").value,
+    heure: document.getElementById("heure").value,
+    prix: document.getElementById("prix").value,
     duree: document.getElementById("duree").value,
     commentaire: document.getElementById("commentaire").value,
   };
 
   ajouterActivite(jourId, dataFiche);
-});
-
-const ficheActivite = document.querySelectorAll(".fiche");
-ficheActivite.forEach((element) => {
-  element.addEventListener("click", (e) => {
-    const activiteId = e.target.id;
-    for (const jour of voyage.jours) {
-      const activite = jour.activites.find((act) => act.id === activiteId);
-      if (activite) {
-        creerFiche(activite);
-      }
-    }
-  });
 });
 
 function creerFiche(activite) {
@@ -150,7 +166,7 @@ function creerFiche(activite) {
   recupPhoto(activite.lieu);
   affichageFicheActivite();
   fermetureFicheActivite();
-  supprimerActivite(activite.id)
+  supprimerActivite(activite.id);
 }
 
 function recupPhoto(place) {
@@ -164,19 +180,17 @@ function recupPhoto(place) {
       if (data.results.length > 0) {
         image.src = data.results[0].urls.regular;
       } else {
-        photoLieu.src = "./ressource/luke-stackpoole-eWqOgJ-lfiI-unsplash.jpg"; // Image par défaut si aucun résultat
+        photoLieu.src = "./ressource/luke-stackpoole-eWqOgJ-lfiI-unsplash.jpg";
       }
     })
     .catch((error) => console.error("Erreur de chargement d'image:", error));
 }
 
-// Affichage de la fiche de l'activité
 function affichageFicheActivite() {
   const modalActivite = document.querySelector(".modalActivite");
   modalActivite.style.display = "flex";
 }
 
-// Fermeture de la fiche de l'activité
 function fermetureFicheActivite() {
   const btnFermeFicheActivite = document.querySelector(".fermerActivite");
   btnFermeFicheActivite.addEventListener("click", () => {
@@ -185,19 +199,21 @@ function fermetureFicheActivite() {
   });
 }
 
-// Supprimer l'activité
 function supprimerActivite(activiteId) {
   const btnDelete = document.querySelector(".deleteActivite");
   btnDelete.addEventListener("click", (e) => {
-  fetch(`http://localhost:3001/api/voyage_${voyageId}/${activiteId}`, {
-    method: "DELETE",
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP : ${response.status}`);
-      }
-      return response.json();
+    fetch(`http://localhost:3001/api/voyage_${voyageId}/${activiteId}`, {
+      method: "DELETE",
     })
-    .then((data) => console.log("Réponse du serveur :", data))
-    .catch((error) => console.error("Erreur lors de la suppression :", error));
-})}
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP : ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => console.log("Réponse du serveur :", data))
+      .catch((error) =>
+        console.error("Erreur lors de la suppression :", error)
+      );
+  });
+}

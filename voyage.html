@@ -97,10 +97,7 @@
 
             <label for="titre">Titre :</label>
             <input type="text" id="titre" required />
-
-            <label for="lieu">Lieu :</label>
-            <input type="text" id="lieu" required />
-
+            
             <label for="type">Type :</label>
             <select type="type" id="type" required>
               <option value="transport">Transport</option>
@@ -108,9 +105,15 @@
               <option value="restauration">Restauration</option>
               <option value="loisir">Loisir</option>
             </select>
-
+                        
+            <label for="lieu">Lieu :</label>
+            <input type="text" id="lieu" required />
+            <label for="heure">heures:</label>
+            <input type="time" id="heure" value="01:00"/>
             <label for="duree">Durée en heures:</label>
-            <input type="number" id="duree" required />
+            <input type="number" id="duree" value="2" />
+            <label for="prix">Prix:</label>
+            <input type="number" id="prix" value="0" />
             
             <label for="commentaire">commentaire:</label>
             <textarea name="commentaire" id="commentaire" rows="4"></textarea>
