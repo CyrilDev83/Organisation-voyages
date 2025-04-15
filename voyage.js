@@ -175,6 +175,7 @@ function creerFiche(activite) {
   affichageFicheActivite();
   fermetureFicheActivite();
   supprimerActivite(activite.id);
+  modifierActivite(activite.id)
 }
 
 function recupPhoto(place) {
@@ -226,4 +227,30 @@ function supprimerActivite(activiteId) {
   });
 }
 
-
+function modifierActivite(activiteId) {
+  const btnModifier = document.querySelector(".modifierActivite")
+  btnModifier.addEventListener("click",(e)=> {
+    console.log(activiteId)
+    fetch(`http://localhost:3001/api/voyage_${voyageId}/${activiteId}`,{
+      method: "PUT",
+      headers: {
+        "content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        titre:"nouveau titre",
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Erreur lors de la modification');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Activité modifiée avec succès', data);
+    })
+    .catch(error => {
+      console.error('Erreur :', error);
+    });
+  })
+}

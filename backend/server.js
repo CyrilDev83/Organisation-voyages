@@ -195,3 +195,45 @@ app.delete("/api/voyage_:id/:activiteId", (req, res) => {
 app.listen(PORT, () =>
   console.log(`Serveur en ligne sur http://localhost:${PORT}`)
 );
+
+// Modifier une activité
+
+app.put("/api/voyage_:id/:activiteId", (req, res) => {
+  console.log("requête de modification");
+
+  const voyageId = req.params.id;
+  const activiteId = req.params.activiteId;
+  const updatedActivity = req.body;
+  const voyagePath = path.join(DATA_PATH, `voyage_${voyageId}.json`);
+
+  if (!fs.existsSync(voyagePath)) {
+    return res.status(404).json({ error: "Voyage non trouvé" });
+  }
+
+  fs.readFile(voyagePath, "utf8", (err, data) => {
+    if (err) return res.status(500).json({ error: "Erreur de lecture du fichier" });
+
+    let voyage = JSON.parse(data);
+    let activiteTrouvee = null;
+
+    // Parcours des jours pour trouver l’activité
+    for (let jour of voyage.jours) {
+      const index = jour.activites.findIndex(act => act.id === activiteId);
+      if (index !== -1) {
+        // Activité trouvée : mise à jour
+        jour.activites[index] = { ...jour.activites[index], ...updatedActivity };
+        activiteTrouvee = jour.activites[index];
+        break;
+      }
+    }
+
+    if (!activiteTrouvee) {
+      return res.status(404).json({ error: "Activité non trouvée" });
+    }
+
+    fs.writeFile(voyagePath, JSON.stringify(voyage, null, 2), err => {
+      if (err) return res.status(500).json({ error: "Erreur d'écriture du fichier" });
+      res.json(activiteTrouvee);
+    });
+  });
+});
