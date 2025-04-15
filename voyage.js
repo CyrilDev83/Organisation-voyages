@@ -18,7 +18,7 @@ class Jour {
   }
 
   ajouterActivite(activite) {
-    this.activites.push(activite);
+    this.activites.push(activite); 
   }
 
   supprimerActivite(id) {

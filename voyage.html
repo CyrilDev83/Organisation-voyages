@@ -45,81 +45,87 @@
         </div>
       </nav>
       <h1 class="titre">Titre du Voyage</h1>
-
-      <section class="voyage">
-        <div class="nuits">
-          <div class="nuit">
-            <h3>NIGHT 1</h3>
+      <div class="principale">
+        <section class="voyage">
+          <div class="nuits">
+            <div class="nuit">
+              <h3>NIGHT 1</h3>
+            </div>
           </div>
-        </div>
 
-        <section class="jours">
-     
-          <!-- Code ajouter par voyage.js -->
+          <section class="jours">
+            <!-- Code ajouter par voyage.js -->
+          </section>
         </section>
-      </section>
-      <section class="modalActivite">
-        <article class="fiche-ouverte">
-          <div class="parametres">
-            <div class="parametre modifierActivite">modifier</div>
-            <div class="parametre fermerActivite">fermer</div>
-            <div class="parametre deleteActivite">supprimer</div>
-          </div>
-          <div class="titre-fiche">courante</div>
-          <div class="delete">delete</div>
-          <div class="docs">Map</div>
-          <div class="fiche-principale">
-            <div class="detail">
-              <div class="lieu">lieu</div>
-              <div class="type">type</div>
-              <div class="duree">duree</div>
-              <div class="commentaire">commentaire</div>
+
+        <section class="map"></section>
+
+        <section class="planning"></section>
+
+        <!-- Modale Activité -->
+        <section class="modalActivite">
+          <article class="fiche-ouverte">
+            <div class="parametres">
+              <div class="parametre modifierActivite">modifier</div>
+              <div class="parametre fermerActivite">fermer</div>
+              <div class="parametre deleteActivite">supprimer</div>
             </div>
-            <div class="photo">
-              <img id="image-lieu" src="" alt="image du lieu">
+            <div class="titre-fiche">courante</div>
+            <div class="delete">delete</div>
+            <div class="docs">Map</div>
+            <div class="fiche-principale">
+              <div class="detail">
+                <div class="lieu">lieu</div>
+                <div class="type">type</div>
+                <div class="duree">duree</div>
+                <div class="commentaire">commentaire</div>
+              </div>
+              <div class="photo">
+                <img id="image-lieu" src="" alt="image du lieu" />
+              </div>
             </div>
+
+            <div class="outils">
+              <div>item1</div>
+              <div>item1</div>
+              <div>item1</div>
+              <div>item1</div>
+              <div>item1</div>
+            </div>
+          </article>
+        </section>
+
+        <div id="modal" class="modal">
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Ajouter une Activité</h2>
+            <form id="form-activite">
+              <label for="titre">Titre :</label>
+              <input type="text" id="titre" required />
+
+              <label for="type">Type :</label>
+              <select type="type" id="type" required>
+                <option value="transport">Transport</option>
+                <option value="visite">Visite</option>
+                <option value="restauration">Restauration</option>
+                <option value="loisir">Loisir</option>
+              </select>
+
+              <label for="lieu">Lieu :</label>
+              <input type="text" id="lieu" required />
+              <label for="heure">heures:</label>
+              <input type="time" id="heure" value="01:00" />
+              <label for="duree">Durée en heures:</label>
+              <input type="number" id="duree" value="2" />
+              <label for="prix">Prix:</label>
+              <input type="number" id="prix" value="0" />
+
+              <label for="commentaire">commentaire:</label>
+              <textarea name="commentaire" id="commentaire" rows="4"></textarea>
+
+              <button type="submit">Ajouter</button>
+            </form>
           </div>
-
-          <div class="outils">
-            <div>item1</div>
-            <div>item1</div>
-            <div>item1</div>
-            <div>item1</div>
-            <div>item1</div>
-          </div>
-        </article>
-      </section>
-      <div id="modal" class="modal">
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <h2>Ajouter une Activité</h2>
-          <form id="form-activite">
-
-            <label for="titre">Titre :</label>
-            <input type="text" id="titre" required />
-            
-            <label for="type">Type :</label>
-            <select type="type" id="type" required>
-              <option value="transport">Transport</option>
-              <option value="visite">Visite</option>
-              <option value="restauration">Restauration</option>
-              <option value="loisir">Loisir</option>
-            </select>
-                        
-            <label for="lieu">Lieu :</label>
-            <input type="text" id="lieu" required />
-            <label for="heure">heures:</label>
-            <input type="time" id="heure" value="01:00"/>
-            <label for="duree">Durée en heures:</label>
-            <input type="number" id="duree" value="2" />
-            <label for="prix">Prix:</label>
-            <input type="number" id="prix" value="0" />
-            
-            <label for="commentaire">commentaire:</label>
-            <textarea name="commentaire" id="commentaire" rows="4"></textarea>
-
-            <button type="submit">Ajouter</button>
-          </form>
         </div>
       </div>
     </main>
