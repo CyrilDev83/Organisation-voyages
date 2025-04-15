@@ -27,7 +27,7 @@ class Jour {
 
   // Trier les activités par heure croissante (utile pour l'affichage)
   trierActivitesParHeure() {
-    console.log(this.activites)
+    
     this.activites.sort((a, b) => a.heure.localeCompare(b.heure));
   }
 }
@@ -158,9 +158,17 @@ formActivite.addEventListener("submit", (e) => {
 function creerFiche(activite) {
   const titreFiche = document.querySelector(".titre-fiche");
   const lieu = document.querySelector(".lieu");
+  const type = document.querySelector(".type");
+  const heure = document.querySelector(".heure");
+  const duree = document.querySelector(".duree");
+  const prix = document.querySelector(".prix");
   const commentaire = document.querySelector(".commentaire");
   titreFiche.innerText = activite.titre;
   lieu.innerText = `lieu : ${activite.lieu}`;
+  type.innerText = `type : ${activite.type}`;
+  heure.innerText = `heure : ${activite.heure}`;
+  duree.innerText = `durée : ${activite.duree} heure(s)`;
+  prix.innerText = `prix : ${activite.prix} €`;
   commentaire.innerText = activite.commentaire;
 
   recupPhoto(activite.lieu);
@@ -217,3 +225,5 @@ function supprimerActivite(activiteId) {
       );
   });
 }
+
+
