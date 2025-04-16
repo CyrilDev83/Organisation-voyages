@@ -18,7 +18,7 @@ class Jour {
   }
 
   ajouterActivite(activite) {
-    this.activites.push(activite); 
+    this.activites.push(activite);
   }
 
   supprimerActivite(id) {
@@ -27,13 +27,13 @@ class Jour {
 
   // Trier les activités par heure croissante (utile pour l'affichage)
   trierActivitesParHeure() {
-    
     this.activites.sort((a, b) => a.heure.localeCompare(b.heure));
   }
 }
 
 const params = new URLSearchParams(window.location.search);
 let voyageId = +params.get("id");
+let jourId = 0;
 
 const reponse = await fetch(`http://localhost:3001/api/voyage_${voyageId}`);
 let voyage = await reponse.json();
@@ -43,9 +43,13 @@ voyage.jours = voyage.jours.map((jour) => new Jour(jour.date, jour.activites));
 
 const titre = document.querySelector(".titre");
 titre.innerText = `${voyage.titre}`;
+const modal = document.getElementById("formulaireActivite");
 
 creationJours(voyage.jours.length);
 affichageActivites();
+
+// quand je clique sur add
+nouvelleActivite();
 
 function creationJours(nb) {
   for (let i = 1; i <= nb; i++) {
@@ -58,22 +62,13 @@ function creationJours(nb) {
     numJour.innerText = `Day ${i}`;
     const fiches = document.createElement("div");
     fiches.classList.add("fiches");
-    const add = document.createElement("button");
+    const add = document.createElement("div");
     add.classList.add("addFiche");
-    add.setAttribute("type", "button");
     add.innerText = "add";
     jour.appendChild(numJour);
     jour.appendChild(fiches);
     jour.appendChild(add);
     jours.appendChild(jour);
-
-    // Réattacher les listeners à la volée
-    add.addEventListener("click", (event) => {
-      const parent = event.target.parentNode;
-      jourId = +parent.id;
-      modal.style.display = "block";
-      return jourId;
-    });
   }
 }
 
@@ -103,96 +98,81 @@ function affichageActivites() {
     const jour = voyage.jours[e];
     jour.trierActivitesParHeure(); // ← 🔥 ici on trie avant d'afficher
 
-  for (let e = 0; e < voyage.jours.length; e++) {
-    const jourdiv = document.getElementById(e + 1);
-    if (!jourdiv) continue;
+    for (let e = 0; e < voyage.jours.length; e++) {
+      const jourdiv = document.getElementById(e + 1);
+      if (!jourdiv) continue;
 
-    const fichesContainer = jourdiv.querySelector(".fiches");
-    fichesContainer.innerHTML = "";
+      const fichesContainer = jourdiv.querySelector(".fiches");
+      fichesContainer.innerHTML = "";
 
-    for (let i = 0; i < voyage.jours[e].activites.length; i++) {
-      const fiche = document.createElement("article");
-      fiche.classList.add("fiche");
-      fiche.innerText = voyage.jours[e].activites[i].titre;
-      fiche.id = voyage.jours[e].activites[i].id;
-      fiche.addEventListener("click", () =>
-        creerFiche(voyage.jours[e].activites[i])
-      );
-      fichesContainer.appendChild(fiche);
+      for (let i = 0; i < voyage.jours[e].activites.length; i++) {
+        const fiche = document.createElement("article");
+        fiche.classList.add("fiche");
+        fiche.innerText = voyage.jours[e].activites[i].titre;
+        fiche.id = voyage.jours[e].activites[i].id;
+        fiche.addEventListener("click", () =>
+          creerFiche(voyage.jours[e].activites[i])
+        );
+        fichesContainer.appendChild(fiche);
+      }
     }
   }
 }
-}
 
-let jourId = 0;
-const modal = document.getElementById("modal");
-const closeModal = document.querySelector(".close");
-const formActivite = document.getElementById("form-activite");
+const dataFiche = {
+  id: Date.now().toString(),
+  titre: document.getElementById("titre").value,
+  type: document.getElementById("type").value,
+  lieu: document.getElementById("lieu").value,
+  heure: document.getElementById("heure").value,
+  prix: document.getElementById("prix").value,
+  duree: document.getElementById("duree").value,
+  commentaire: document.getElementById("commentaire").value,
+};
 
-closeModal.addEventListener("click", () => {
-  modal.style.display = "none";
-});
 
-window.addEventListener("click", (event) => {
-  if (event.target === modal) {
-    modal.style.display = "none";
-  }
-});
-
-formActivite.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const dataFiche = {
-    id: Date.now().toString(),
-    titre: document.getElementById("titre").value,
-    type: document.getElementById("type").value,
-    lieu: document.getElementById("lieu").value,
-    heure: document.getElementById("heure").value,
-    prix: document.getElementById("prix").value,
-    duree: document.getElementById("duree").value,
-    commentaire: document.getElementById("commentaire").value,
-  };
-
-  ajouterActivite(jourId, dataFiche);
-});
 
 function creerFiche(activite) {
-  const titreFiche = document.querySelector(".titre-fiche");
-  const lieu = document.querySelector(".lieu");
-  const type = document.querySelector(".type");
-  const heure = document.querySelector(".heure");
-  const duree = document.querySelector(".duree");
-  const prix = document.querySelector(".prix");
-  const commentaire = document.querySelector(".commentaire");
-  titreFiche.innerText = activite.titre;
-  lieu.innerText = `lieu : ${activite.lieu}`;
-  type.innerText = `type : ${activite.type}`;
-  heure.innerText = `heure : ${activite.heure}`;
-  duree.innerText = `durée : ${activite.duree} heure(s)`;
-  prix.innerText = `prix : ${activite.prix} €`;
-  commentaire.innerText = activite.commentaire;
+  const titreFiche = document.querySelector("#titre");
+  titreFiche.value = activite.titre;
+  const lieu = document.querySelector("#lieu");
+  lieu.value = activite.lieu;
+  const type = document.querySelector("#type");
+  type.value = activite.type;
+  const heure = document.querySelector("#heure");
+  heure.value = activite.heure;
+  const duree = document.querySelector("#duree");
+  duree.value = activite.duree;
+  const prix = document.querySelector("#prix");
+  prix.value = activite.prix;
+  const commentaire = document.querySelector("#commentaire");
+  commentaire.value = activite.commentaire;
 
   recupPhoto(activite.lieu);
   affichageFicheActivite();
   fermetureFicheActivite();
   supprimerActivite(activite.id);
-  modifierActivite(activite.id)
+  modifierActivite(activite.id);
 }
 
 function recupPhoto(place) {
-  const image = document.getElementById("image-lieu");
-  const accessKey = "Sl-xrjWtpOWmoPVqlnovMkM6-Hupaxr41AU2Q12gTNA";
-  const url = `https://api.unsplash.com/search/photos?query=${place}&client_id=${accessKey}`;
+  if (place) {
+    const image = document.getElementById("image-lieu");
+    const accessKey = "Sl-xrjWtpOWmoPVqlnovMkM6-Hupaxr41AU2Q12gTNA";
+    const url = `https://api.unsplash.com/search/photos?query=${place}&client_id=${accessKey}`;
 
-  fetch(url)
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.results.length > 0) {
-        image.src = data.results[0].urls.regular;
-      } else {
-        photoLieu.src = "./ressource/luke-stackpoole-eWqOgJ-lfiI-unsplash.jpg";
-      }
-    })
-    .catch((error) => console.error("Erreur de chargement d'image:", error));
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.results.length > 0) {
+          image.src = data.results[0].urls.regular;
+        } else {
+          photoLieu.src =
+            "./ressource/luke-stackpoole-eWqOgJ-lfiI-unsplash.jpg";
+        }
+      })
+      .catch((error) => console.error("Erreur de chargement d'image:", error));
+  }
 }
 
 function affichageFicheActivite() {
@@ -205,6 +185,7 @@ function fermetureFicheActivite() {
   btnFermeFicheActivite.addEventListener("click", () => {
     const modalActivite = document.querySelector(".modalActivite");
     modalActivite.style.display = "none";
+    affichageEnregistrerActivite();
   });
 }
 
@@ -228,29 +209,73 @@ function supprimerActivite(activiteId) {
 }
 
 function modifierActivite(activiteId) {
-  const btnModifier = document.querySelector(".modifierActivite")
-  btnModifier.addEventListener("click",(e)=> {
-    console.log(activiteId)
-    fetch(`http://localhost:3001/api/voyage_${voyageId}/${activiteId}`,{
-      method: "PUT",
-      headers: {
-        "content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        titre:"nouveau titre",
-      })
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Erreur lors de la modification');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Activité modifiée avec succès', data);
-    })
-    .catch(error => {
-      console.error('Erreur :', error);
+  const btnModifier = document.querySelector(".modifierActivite");
+  btnModifier.addEventListener("click", (e) => {
+    console.log("pret pour modification");
+    //   fetch(`http://localhost:3001/api/voyage_${voyageId}/${activiteId}`,{
+    //     method: "PUT",
+    //     headers: {
+    //       "content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       titre:"nouveau titre",
+    //     })
+    //   })
+    //   .then(response => {
+    //     if (!response.ok) {
+    //       throw new Error('Erreur lors de la modification');
+    //     }
+    //     return response.json();
+    //   })
+    //   .then(data => {
+    //     console.log('Activité modifiée avec succès', data);
+    //   })
+    //   .catch(error => {
+    //     console.error('Erreur :', error);
+    //   });
+    affichageModifierActivite();
+  });
+}
+
+function affichageModifierActivite() {
+  document.querySelectorAll("input, textarea, select").forEach((el) => {
+    el.disabled = !el.disabled;
+    el.classList.add("modifier");
+  });
+  const btnEnregistrer = document.querySelector(".enregistrerActivite");
+  btnEnregistrer.style.display = "block";
+  btnEnregistrer.addEventListener("click", (e) => {
+    affichageEnregistrerActivite();
+  });
+}
+
+function affichageEnregistrerActivite() {
+  const btnEnregistrer = document.querySelector(".enregistrerActivite");
+  btnEnregistrer.style.display = "none";
+  document.querySelectorAll("input, textarea, select").forEach((el) => {
+    el.disabled = true;
+    el.classList.remove("modifier");
+  });
+  ajouterActivite(jourId,dataFiche)
+  console.log("activité enregistrer");
+}
+
+function nouvelleActivite() {
+  document.querySelectorAll(".addFiche").forEach((add) => {
+    add.addEventListener("click", (event) => {
+      event.preventDefault();
+      const parent = event.target.parentNode;
+      jourId = +parent.id;
+
+      console.log("coucou");
+      
+      affichageFicheActivite();
+      recupPhoto();
+      affichageFicheActivite();
+      fermetureFicheActivite();
+      supprimerActivite();
+      modifierActivite();
+    
     });
-  })
+  });
 }

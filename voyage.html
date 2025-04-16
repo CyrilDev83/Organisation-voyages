@@ -63,67 +63,86 @@
         <section class="planning"></section>
 
         <!-- Modale Activité -->
-        <section class="modalActivite">
-          <article class="fiche-ouverte">
-            <div class="parametres">
-              <div class="parametre modifierActivite">modifier</div>
-              <div class="parametre fermerActivite">fermer</div>
-              <div class="parametre deleteActivite">supprimer</div>
-            </div>
-            <div class="titre-fiche">courante</div>
-            <!-- <div class="delete">delete</div> -->
-            <div class="mini-map">Map</div>
-            <div class="fiche-principale">
-              <div class="detail">
-                <div class="type">type</div>
-                <div class="lieu">lieu</div>
-                <div class="heure">heure</div>
-                <div class="duree">duree</div>
-                <div class="prix">prix</div>
-                <div class="commentaire">commentaire</div>
+        <form id="formulaireActivite">
+          <section class="modalActivite">
+            <article class="fiche-ouverte">
+              <div class="parametres">
+                <div class="parametre modifierActivite">modifier</div>
+                <div class="parametre enregistrerActivite">Enregistrer</div>
+                <div class="parametre fermerActivite">fermer</div>
+                <div class="parametre deleteActivite">supprimer</div>
               </div>
-              <div class="photo">
-                <img id="image-lieu" src="" alt="image du lieu" />
+              <div class="titre-fiche">
+                <label for="titre"></label>
+                <input type="text" id="titre" disabled/>
               </div>
-            </div>
 
-            <div class="outils">
-              <div>item1</div>
-              <div>item1</div>
-              <div>item1</div>
-              <div>item1</div>
-              <div>item1</div>
-            </div>
-          </article>
-        </section>
+              <div class="mini-map">Map</div>
 
+              <div class="fiche-principale">
+                <div class="detail">
+                  <div class="type">
+                    <label for="type">Type :</label>
+                    <select type="type" id="type" disabled>
+                      <option value="transport">Transport</option>
+                      <option value="visite">Visite</option>
+                      <option value="restauration">Restauration</option>
+                      <option value="loisir">Loisir</option>
+                    </select>
+                  </div>
+                  <div class="lieu">
+                    <label for="lieu">Lieu:</label>
+                    <input type="text" id="lieu" disabled/>
+                  </div>
+                  <div class="heure">
+                    <label for="heure">heures:</label>
+                    <input type="time" id="heure" value="01:00" disabled/>
+                  </div>
+                  <div class="duree">
+                    <label for="duree">Durée en heures:</label>
+                    <input type="number" id="duree" value="2" />
+                  </div>
+                  <div class="prix">
+                    <label for="prix">Prix:</label>
+                    <input type="number" id="prix" value="0" />
+                  </div>
+                  <div class="commentaire">
+                    <label for="commentaire">commentaire:</label>
+              <textarea name="commentaire" id="commentaire" rows="4"></textarea>
+                  </div>
+                </div>
+                <div class="photo">
+                  <img id="image-lieu" src="" alt="image du lieu" />
+                </div>
+              </div>
+
+              <div class="outils">
+                <div>item1</div>
+                <div>item1</div>
+                <div>item1</div>
+                <div>item1</div>
+                <div>item1</div>
+              </div>
+            </article>
+          </section>
+        </form>
         <div id="modal" class="modal">
           <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Ajouter une Activité</h2>
             <form id="form-activite">
-              <label for="titre">Titre :</label>
-              <input type="text" id="titre" required />
+              <!-- <label for="titre">Titre :</label>
+              <input type="text" id="titre" /> -->
 
-              <label for="type">Type :</label>
-              <select type="type" id="type" required>
-                <option value="transport">Transport</option>
-                <option value="visite">Visite</option>
-                <option value="restauration">Restauration</option>
-                <option value="loisir">Loisir</option>
-              </select>
+        
+           t>
 
-              <label for="lieu">Lieu :</label>
-              <input type="text" id="lieu" required />
-              <label for="heure">heures:</label>
-              <input type="time" id="heure" value="01:00" />
-              <label for="duree">Durée en heures:</label>
-              <input type="number" id="duree" value="2" />
-              <label for="prix">Prix:</label>
-              <input type="number" id="prix" value="0" />
+              
+             
+        
+              
 
-              <label for="commentaire">commentaire:</label>
-              <textarea name="commentaire" id="commentaire" rows="4"></textarea>
+              
 
               <button type="submit">Ajouter</button>
             </form>

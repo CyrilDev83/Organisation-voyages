@@ -20,6 +20,22 @@ h1 {
   width: 100%;
   text-align: center;
 }
+input, textarea, select{
+  border: none;
+  background: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: center;
+  
+}
+.modifier {
+  background-color: rgba(245, 245, 245, 0.5) ;
+  border-radius: 5px;
+}
+
 .principale {
   margin-bottom: 20px;
   /* padding: 20px; */
@@ -183,6 +199,10 @@ h1 {
 .modifierActivite {
   background-color: grey;
 }
+.enregistrerActivite {
+  background-color: grey;
+  display: none;
+}
 .fermerActivite {
   background-color: blue;
 }
@@ -226,6 +246,7 @@ h1 {
 .lieu {
   grid-area: lieu;
 }
+
 .prix {
   grid-area: prix;
 }
@@ -235,13 +256,13 @@ h1 {
 .duree {
   grid-area: duree;
 }
-.commentaire {
+/* .commentaire {
   grid-area: commentaire;
   border: 1px solid black;
   background-color: whitesmoke;
   border-radius: 5px;
   padding: 5px;
-}
+} */
 
 .photo {
   width: 50%;
