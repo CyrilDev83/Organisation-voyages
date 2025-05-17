@@ -199,7 +199,11 @@ input, textarea, select{
 .modifierActivite {
   background-color: grey;
 }
-.enregistrerActivite {
+.enregistrerNewActivite {
+  background-color: grey;
+  display: none;
+}
+.enregistrerModification {
   background-color: grey;
   display: none;
 }

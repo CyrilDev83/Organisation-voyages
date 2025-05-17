@@ -48,8 +48,11 @@ const modal = document.getElementById("formulaireActivite");
 creationJours(voyage.jours.length);
 affichageActivites();
 
-// quand je clique sur add
-nouvelleActivite();
+document.querySelectorAll(".addFiche").forEach((add) => {
+  add.addEventListener("click", (event) => {
+    nouvelleActivite(event);
+  });
+});
 
 function creationJours(nb) {
   for (let i = 1; i <= nb; i++) {
@@ -92,7 +95,7 @@ function ajouterActivite(jourId, activite) {
 }
 
 function affichageActivites() {
-  const joursContainer = document.querySelector(".jours");
+  // const joursContainer = document.querySelector(".jours");
 
   for (let e = 0; e < voyage.jours.length; e++) {
     const jour = voyage.jours[e];
@@ -110,27 +113,15 @@ function affichageActivites() {
         fiche.classList.add("fiche");
         fiche.innerText = voyage.jours[e].activites[i].titre;
         fiche.id = voyage.jours[e].activites[i].id;
-        fiche.addEventListener("click", () =>
-          creerFiche(voyage.jours[e].activites[i])
-        );
+        fiche.addEventListener("click", () => {
+          creerFiche(voyage.jours[e].activites[i]);
+          console.log("hello");
+        });
         fichesContainer.appendChild(fiche);
       }
     }
   }
 }
-
-const dataFiche = {
-  id: Date.now().toString(),
-  titre: document.getElementById("titre").value,
-  type: document.getElementById("type").value,
-  lieu: document.getElementById("lieu").value,
-  heure: document.getElementById("heure").value,
-  prix: document.getElementById("prix").value,
-  duree: document.getElementById("duree").value,
-  commentaire: document.getElementById("commentaire").value,
-};
-
-
 
 function creerFiche(activite) {
   const titreFiche = document.querySelector("#titre");
@@ -148,11 +139,35 @@ function creerFiche(activite) {
   const commentaire = document.querySelector("#commentaire");
   commentaire.value = activite.commentaire;
 
-  recupPhoto(activite.lieu);
   affichageFicheActivite();
-  fermetureFicheActivite();
-  supprimerActivite(activite.id);
-  modifierActivite(activite.id);
+
+  const btnFermeFicheActivite = document.querySelector(".fermerActivite");
+  btnFermeFicheActivite.addEventListener("click", () => {
+    fermetureFicheActivite();
+  });
+
+  const btnDelete = document.querySelector(".deleteActivite");
+  btnDelete.addEventListener("click", (e) => {
+    supprimerActivite(activite.id);
+  });
+
+  const btnModifier = document.querySelector(".modifierActivite");
+  btnModifier.addEventListener("click", (e) => {
+    affichageModifierActivite();
+  });
+
+  const btnEnregistrerNewActivité = document.querySelector(".enregistrerNewActivite");
+  btnEnregistrerNewActivité.addEventListener("click", () => {
+    enregistrerNewActivite();
+  });
+  const btnEnregistrerModifications = document.querySelector(".enregistrerModification");
+  btnEnregistrerModifications.addEventListener("click", () => {
+    enregistrerModification(activite.id);
+  });
+
+  recupPhoto(activite.lieu);
+
+
 }
 
 function recupPhoto(place) {
@@ -178,104 +193,108 @@ function recupPhoto(place) {
 function affichageFicheActivite() {
   const modalActivite = document.querySelector(".modalActivite");
   modalActivite.style.display = "flex";
+  console.log("fonction: affichageFicheActivite");
 }
 
 function fermetureFicheActivite() {
-  const btnFermeFicheActivite = document.querySelector(".fermerActivite");
-  btnFermeFicheActivite.addEventListener("click", () => {
-    const modalActivite = document.querySelector(".modalActivite");
-    modalActivite.style.display = "none";
-    affichageEnregistrerActivite();
-  });
+  const modalActivite = document.querySelector(".modalActivite");
+  modalActivite.style.display = "none";
+  // enregistrerActivite()
+  // affichageEnregistrerActivite()
+  console.log("fonction: fermetureFicheActivite")
 }
 
 function supprimerActivite(activiteId) {
-  const btnDelete = document.querySelector(".deleteActivite");
-  btnDelete.addEventListener("click", (e) => {
-    fetch(`http://localhost:3001/api/voyage_${voyageId}/${activiteId}`, {
-      method: "DELETE",
+  fetch(`http://localhost:3001/api/voyage_${voyageId}/${activiteId}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP : ${response.status}`);
+      }
+      return response.json();
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Erreur HTTP : ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => console.log("Réponse du serveur :", data))
-      .catch((error) =>
-        console.error("Erreur lors de la suppression :", error)
-      );
-  });
+    .then((data) => console.log("Réponse du serveur :", data))
+    .catch((error) => console.error("Erreur lors de la suppression :", error));
 }
 
-function modifierActivite(activiteId) {
-  const btnModifier = document.querySelector(".modifierActivite");
-  btnModifier.addEventListener("click", (e) => {
-    console.log("pret pour modification");
-    //   fetch(`http://localhost:3001/api/voyage_${voyageId}/${activiteId}`,{
-    //     method: "PUT",
-    //     headers: {
-    //       "content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       titre:"nouveau titre",
-    //     })
-    //   })
-    //   .then(response => {
-    //     if (!response.ok) {
-    //       throw new Error('Erreur lors de la modification');
-    //     }
-    //     return response.json();
-    //   })
-    //   .then(data => {
-    //     console.log('Activité modifiée avec succès', data);
-    //   })
-    //   .catch(error => {
-    //     console.error('Erreur :', error);
-    //   });
-    affichageModifierActivite();
-  });
+function enregistrerModification(activiteId) {
+  console.log("pret pour modification");
+  console.log(activiteId)
+  affichageModifierActivite();
+
+ fetch(`http://localhost:3001/api/voyage_${voyageId}/${activiteId}`, {
+    method: "PUT",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP : ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => console.log("Réponse du serveur :", data))
+    .catch((error) => console.error("Erreur lors de la suppression :", error));
 }
 
 function affichageModifierActivite() {
-  document.querySelectorAll("input, textarea, select").forEach((el) => {
-    el.disabled = !el.disabled;
-    el.classList.add("modifier");
-  });
-  const btnEnregistrer = document.querySelector(".enregistrerActivite");
-  btnEnregistrer.style.display = "block";
-  btnEnregistrer.addEventListener("click", (e) => {
-    affichageEnregistrerActivite();
-  });
+  modifierChampsActivite()
+  document.querySelector(".modifierActivite").style.display = "none";
+  const btnEnregistrerModification = document.querySelector(".enregistrerModification");
+  btnEnregistrerModification.style.display = "block";
+  // btnEnregistrerModification.addEventListener("click", (e) => {
+  //   affichageEnregistrerActivite();
+  // });
+  console.log("fonction: affichageModifierActivite")
 }
 
-function affichageEnregistrerActivite() {
-  const btnEnregistrer = document.querySelector(".enregistrerActivite");
-  btnEnregistrer.style.display = "none";
+function affichageEnregistrerNewActivite() {
+  const btnEnregistrerNewActivite = document.querySelector(".enregistrerNewActivite");
+  btnEnregistrerNewActivite.style.display = "block";
+  document.querySelector(".modifierActivite").style.display = "none";
   document.querySelectorAll("input, textarea, select").forEach((el) => {
     el.disabled = true;
     el.classList.remove("modifier");
   });
-  ajouterActivite(jourId,dataFiche)
+}
+function enregistrerNewActivite() {
+  const dataFiche = {
+    id: Date.now().toString(),
+    titre: document.getElementById("titre").value,
+    type: document.getElementById("type").value,
+    lieu: document.getElementById("lieu").value,
+    heure: document.getElementById("heure").value,
+    prix: document.getElementById("prix").value,
+    duree: document.getElementById("duree").value,
+    commentaire: document.getElementById("commentaire").value,
+  };
+  console.log(dataFiche);
+  ajouterActivite(jourId, dataFiche);
   console.log("activité enregistrer");
 }
 
-function nouvelleActivite() {
-  document.querySelectorAll(".addFiche").forEach((add) => {
-    add.addEventListener("click", (event) => {
-      event.preventDefault();
-      const parent = event.target.parentNode;
-      jourId = +parent.id;
+function nouvelleActivite(event) {
+  const parent = event.target.parentNode;
+  jourId = +parent.id;
+  affichageEnregistrerNewActivite();
+  modifierChampsActivite()
+  console.log("fonction: nouvelleActivite");
+  const nouvelleActivite = new Activite({
+    id: 0,
+    titre: "",
+    lieu: "",
+    type: "",
+    prix: 0,
+    heure: "",
+    duree: 0,
+    commentaire: "",
+  });
+  creerFiche(nouvelleActivite);
+}
 
-      console.log("coucou");
-      
-      affichageFicheActivite();
-      recupPhoto();
-      affichageFicheActivite();
-      fermetureFicheActivite();
-      supprimerActivite();
-      modifierActivite();
-    
-    });
+function modifierChampsActivite () {
+    document.querySelectorAll("input, textarea, select").forEach((el) => {
+    el.disabled = !el.disabled;
+    el.classList.add("modifier");
+    console.log("fonction: modifierChampsActivite")
   });
 }
