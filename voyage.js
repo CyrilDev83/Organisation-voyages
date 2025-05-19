@@ -156,18 +156,20 @@ function creerFiche(activite) {
     affichageModifierActivite();
   });
 
-  const btnEnregistrerNewActivité = document.querySelector(".enregistrerNewActivite");
+  const btnEnregistrerNewActivité = document.querySelector(
+    ".enregistrerNewActivite"
+  );
   btnEnregistrerNewActivité.addEventListener("click", () => {
     enregistrerNewActivite();
   });
-  const btnEnregistrerModifications = document.querySelector(".enregistrerModification");
+  const btnEnregistrerModifications = document.querySelector(
+    ".enregistrerModification"
+  );
   btnEnregistrerModifications.addEventListener("click", () => {
     enregistrerModification(activite.id);
   });
 
   recupPhoto(activite.lieu);
-
-
 }
 
 function recupPhoto(place) {
@@ -199,9 +201,7 @@ function affichageFicheActivite() {
 function fermetureFicheActivite() {
   const modalActivite = document.querySelector(".modalActivite");
   modalActivite.style.display = "none";
-  // enregistrerActivite()
-  // affichageEnregistrerActivite()
-  console.log("fonction: fermetureFicheActivite")
+  console.log("fonction: fermetureFicheActivite");
 }
 
 function supprimerActivite(activiteId) {
@@ -219,9 +219,6 @@ function supprimerActivite(activiteId) {
 }
 
 function enregistrerModification(activiteId) {
-  
-  console.log(activiteId)
-  // affichageModifierActivite();
   const activiteModifiee = {
     id: activiteId,
     titre: document.getElementById("titre").value,
@@ -233,7 +230,7 @@ function enregistrerModification(activiteId) {
     commentaire: document.getElementById("commentaire").value,
   };
 
- fetch(`http://localhost:3001/api/voyage_${voyageId}/${activiteId}`, {
+  fetch(`http://localhost:3001/api/voyage_${voyageId}/${activiteId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(activiteModifiee),
@@ -249,20 +246,20 @@ function enregistrerModification(activiteId) {
 }
 
 function affichageModifierActivite() {
-  modifierChampsActivite()
+  modifierChampsActivite();
   document.querySelector(".modifierActivite").style.display = "none";
-  const btnEnregistrerModification = document.querySelector(".enregistrerModification");
-  btnEnregistrerModification.style.display = "block";
-  // btnEnregistrerModification.addEventListener("click", (e) => {
-  //   affichageEnregistrerActivite();
-  // });
-  console.log("fonction: affichageModifierActivite")
+  document.querySelector(".enregistrerModification").style.display = "block";
+  document.querySelector(".deleteActivite").style.display = "none";
+  document.querySelector(".fermerActivite").style.display = "none";
+  // document.querySelector(".fermerActivite").innerText = "Annuler";
+
+  console.log("fonction: affichageModifierActivite");
   console.log("pret pour modification");
 }
 
 function affichageEnregistrerNewActivite() {
-  const btnEnregistrerNewActivite = document.querySelector(".enregistrerNewActivite");
-  btnEnregistrerNewActivite.style.display = "block";
+  document.querySelector(".enregistrerNewActivite").style.display = "block";
+  document.querySelector(".deleteActivite").style.display = "none";
   document.querySelector(".modifierActivite").style.display = "none";
   document.querySelectorAll("input, textarea, select").forEach((el) => {
     el.disabled = true;
@@ -289,7 +286,7 @@ function nouvelleActivite(event) {
   const parent = event.target.parentNode;
   jourId = +parent.id;
   affichageEnregistrerNewActivite();
-  modifierChampsActivite()
+  modifierChampsActivite();
   console.log("fonction: nouvelleActivite");
   const nouvelleActivite = new Activite({
     id: 0,
@@ -304,10 +301,10 @@ function nouvelleActivite(event) {
   creerFiche(nouvelleActivite);
 }
 
-function modifierChampsActivite () {
-    document.querySelectorAll("input, textarea, select").forEach((el) => {
+function modifierChampsActivite() {
+  document.querySelectorAll("input, textarea, select").forEach((el) => {
     el.disabled = !el.disabled;
     el.classList.add("modifier");
-    console.log("fonction: modifierChampsActivite")
+    console.log("fonction: modifierChampsActivite");
   });
 }
