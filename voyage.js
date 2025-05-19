@@ -115,7 +115,7 @@ function affichageActivites() {
         fiche.id = voyage.jours[e].activites[i].id;
         fiche.addEventListener("click", () => {
           creerFiche(voyage.jours[e].activites[i]);
-          console.log("hello");
+          console.log("fonction: affichageActivite");
         });
         fichesContainer.appendChild(fiche);
       }
@@ -219,12 +219,24 @@ function supprimerActivite(activiteId) {
 }
 
 function enregistrerModification(activiteId) {
-  console.log("pret pour modification");
+  
   console.log(activiteId)
-  affichageModifierActivite();
+  // affichageModifierActivite();
+  const activiteModifiee = {
+    id: activiteId,
+    titre: document.getElementById("titre").value,
+    type: document.getElementById("type").value,
+    lieu: document.getElementById("lieu").value,
+    heure: document.getElementById("heure").value,
+    prix: document.getElementById("prix").value,
+    duree: document.getElementById("duree").value,
+    commentaire: document.getElementById("commentaire").value,
+  };
 
  fetch(`http://localhost:3001/api/voyage_${voyageId}/${activiteId}`, {
     method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(activiteModifiee),
   })
     .then((response) => {
       if (!response.ok) {
@@ -245,6 +257,7 @@ function affichageModifierActivite() {
   //   affichageEnregistrerActivite();
   // });
   console.log("fonction: affichageModifierActivite")
+  console.log("pret pour modification");
 }
 
 function affichageEnregistrerNewActivite() {

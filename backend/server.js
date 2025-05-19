@@ -205,6 +205,7 @@ app.put("/api/voyage_:id/:activiteId", (req, res) => {
   const activiteId = req.params.activiteId;
   const updatedActivity = req.body;
   const voyagePath = path.join(DATA_PATH, `voyage_${voyageId}.json`);
+  console.log(voyageId, activiteId, updatedActivity)
 
   if (!fs.existsSync(voyagePath)) {
     return res.status(404).json({ error: "Voyage non trouvé" });
