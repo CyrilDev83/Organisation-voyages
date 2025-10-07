@@ -12,8 +12,8 @@ class Activite {
 }
 
 class Jour {
-  constructor(date, activites = []) {
-    this.date = date;
+  constructor(jour, activites = []) {
+    this.jour = jour;
     this.activites = activites.map((act) => new Activite(act));
   }
 
@@ -39,7 +39,7 @@ const reponse = await fetch(`http://localhost:3001/api/voyage_${voyageId}`);
 let voyage = await reponse.json();
 
 // Recréer les jours avec la classe Jour
-voyage.jours = voyage.jours.map((jour) => new Jour(jour.date, jour.activites));
+voyage.jours = voyage.jours.map((jour) => new Jour(jour.jour, jour.activites));
 
 const titre = document.querySelector(".titre");
 titre.innerText = `${voyage.titre}`;
@@ -48,6 +48,14 @@ const modal = document.getElementById("formulaireActivite");
 creationJours(voyage.jours.length);
 affichageActivites();
 
+// déatil des jours
+// document.querySelectorAll(".num-jour").forEach((jour) => {
+//   jour.addEventListener("click", (event) => {
+//     affichageJour(event)
+//   })
+// })
+
+// Bouton Add
 document.querySelectorAll(".addFiche").forEach((add) => {
   add.addEventListener("click", (event) => {
     nouvelleActivite(event);
@@ -95,30 +103,26 @@ function ajouterActivite(jourId, activite) {
 }
 
 function affichageActivites() {
-  // const joursContainer = document.querySelector(".jours");
+  for (let i = 0; i < voyage.jours.length; i++) {
+    const jour = voyage.jours[i];
+    jour.trierActivitesParHeure(); // Tri des activités
 
-  for (let e = 0; e < voyage.jours.length; e++) {
-    const jour = voyage.jours[e];
-    jour.trierActivitesParHeure(); // ← 🔥 ici on trie avant d'afficher
+    const jourdiv = document.getElementById(i + 1);
+    if (!jourdiv) continue;
 
-    for (let e = 0; e < voyage.jours.length; e++) {
-      const jourdiv = document.getElementById(e + 1);
-      if (!jourdiv) continue;
+    const fichesContainer = jourdiv.querySelector(".fiches");
+    fichesContainer.innerHTML = "";
 
-      const fichesContainer = jourdiv.querySelector(".fiches");
-      fichesContainer.innerHTML = "";
-
-      for (let i = 0; i < voyage.jours[e].activites.length; i++) {
-        const fiche = document.createElement("article");
-        fiche.classList.add("fiche");
-        fiche.innerText = voyage.jours[e].activites[i].titre;
-        fiche.id = voyage.jours[e].activites[i].id;
-        fiche.addEventListener("click", () => {
-          creerFiche(voyage.jours[e].activites[i]);
-          console.log("fonction: affichageActivite");
-        });
-        fichesContainer.appendChild(fiche);
-      }
+    for (let activite of jour.activites) {
+      const fiche = document.createElement("article");
+      fiche.classList.add("fiche");
+      fiche.innerText = activite.titre;
+      fiche.id = activite.id;
+      fiche.addEventListener("click", () => {
+        creerFiche(activite);
+        console.log("fonction: affichageActivite");
+      });
+      fichesContainer.appendChild(fiche);
     }
   }
 }
@@ -308,3 +312,77 @@ function modifierChampsActivite() {
     console.log("fonction: modifierChampsActivite");
   });
 }
+
+// function affichageJour(e) {
+//   recupJourId(e)
+// }
+
+// function recupJourId(event) {
+//    const parent = event.target.parentNode;
+//   jourId = +parent.id;
+//   console.log(jourId)
+// }
+
+function genererAgenda(dateDepartStr, duree) {
+  const agenda = document.querySelector("#agenda");
+  agenda.innerText = "";
+
+  const dateDepart = new Date(dateDepartStr);
+
+  for (let i = 0; i < duree; i++) {
+    let date = new Date(dateDepart + i);
+    const jour = date.getDate().toString().padStart(2, "0");
+    let numJour = i+1
+    const mois = (date.getMonth() + 1).toString().padStart(2, "0");
+    const annee = date.getFullYear();
+    date.setDate(date.getDate() + i);
+    const jourDiv = document.createElement("div");
+    jourDiv.classList.add("jourAgenda");
+    const titreJour = document.createElement("div");
+    titreJour.classList.add("titreJour");
+    titreJour.innerText = `Jour ${i + 1} le ${jour}/${mois}/${annee}`;
+    jourDiv.appendChild(titreJour);
+    const ctnHeure = document.createElement("div");
+    ctnHeure.classList.add("ctnHeure");
+
+    for (let h = 0; h < 24; h++) {
+      const heureDiv = document.createElement("div");
+      heureDiv.classList.add("heureAgenda");
+      heureDiv.id = `heureDiv${numJour}-${h}:00`;
+      heureDiv.innerText = `${h.toString().padStart(2, "0")}:00`;
+      ctnHeure.appendChild(heureDiv);
+      jourDiv.appendChild(ctnHeure);
+    }
+    agenda.appendChild(jourDiv);
+  }
+  const scrollContainer = document.querySelector(".agenda-scroll");
+
+  scrollContainer.addEventListener("wheel", function (evt) {
+    if (evt.deltaY !== 0) {
+      evt.preventDefault();
+      scrollContainer.scrollLeft += evt.deltaY;
+    }
+  });
+}
+
+genererAgenda(voyage.date, voyage.duree);
+
+function importActivitesAgenda(jours) {
+  const jour = jours[0].jour
+  console.log(jour)
+  for (let i = 0; i < jours[0].activites.length; i++) {
+    const activite = jours[0].activites[i];
+    console.log(activite);
+    const heureDebut = activite.heure;
+    console.log(heureDebut);
+    const duree = activite.duree;
+    console.log(duree);
+    const idHeure = `heureDiv${jour}-${heureDebut}`
+    console.log(idHeure)
+   const blabla = document.getElementById(`${idHeure}`)
+   console.log(blabla)
+    
+  }
+}
+
+importActivitesAgenda(voyage.jours);

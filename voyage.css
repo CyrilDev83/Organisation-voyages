@@ -46,7 +46,7 @@ input, textarea, select{
 
   gap: 10px;
   grid-template-columns: 1fr 2fr;
-  grid-template-rows: 70% 30%;
+  grid-template-rows: 75% 25%;
   grid-template-areas:
     "voyage map"
     " planning planning";
@@ -68,7 +68,7 @@ input, textarea, select{
 }
 .planning {
   grid-area: planning;
-  background-color: beige;
+  background-color: rgb(246, 246, 246);
   border-radius: 20px;
 }
 
@@ -374,4 +374,55 @@ input, textarea, select{
   background-color: rgb(169, 169, 169);
   border-radius: 5px;
   text-align: center;
+}
+
+/* Agenda */
+.agenda-scroll {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  padding: 10px;
+  gap: 5px;
+  height: 100%;
+  /* background-color: #476e9e; */
+  /* scrollbar-height: thin; */
+  scrollbar-color: #999 transparent;
+}
+
+.jourAgenda {
+  min-width: 150px;
+  /* background: #f0f0f0; */
+  border-radius: 8px;
+  text-align: center;
+  /* padding: 5px; */
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  /* background-color: aqua; */
+  height: 100%;
+}
+
+.titreJour{
+  font-weight: bold;
+  margin-bottom: 5px;
+  background: #ddd;
+  padding: 4px;
+  border-radius: 4px;
+  /* background-color: red; */
+}
+
+.ctnHeure {
+  /* background-color: green; */
+  display: flex;
+  height: 80%;
+}
+
+.heureAgenda {
+  
+  
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  padding: 4px;
+  font-size: 12px;
+  height: 100%;
 }
